@@ -1,0 +1,61 @@
+// Add the following styles in your CSS
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+    margin: auto;
+    border: 1px solid #dedede;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.chat-header {
+    background: #007bff;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+
+.chat-body {
+    padding: 10px;
+    height: 300px;
+    overflow-y: auto;
+}
+
+.chat-message {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.chat-message p {
+    margin-left: 10px;
+}
+
+.chat-message.user {
+    justify-content: flex-end;
+}
+
+.chat-message.bot {
+    justify-content: flex-start;
+}
+
+.chat-footer {
+    border-top: 1px solid #dedede;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.chat-button {
+    background: #007bff;
+    border: none;
+    border-radius: 50%;
+    padding: 10px;
+    color: white;
+    cursor: pointer;
+}
+
+.chat-button:disabled {
+    background: #ccc;
+}
