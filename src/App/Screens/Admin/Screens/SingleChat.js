@@ -23,6 +23,7 @@ const SingleChat = () => {
             setPageLoading(true);
             axios.get(`${Helpers.apiUrl}chat/get/${chatid}`, Helpers.authHeaders).then(response => {
                 setChat(response.data);
+                console.log('data', response.data);
                 setPageLoading(false);
                 setMessages(response.data.messages);
                 setTimeout(() => {

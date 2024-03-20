@@ -168,11 +168,12 @@ const AdminButtons = () => {
                                                         return (
                                                             <tr>
                                                                 <td>{ index + 1 }</td>
-                                                                <td>{ btn.name }</td>
-                                                                <td>{ btn.prompt_question.name }</td>
-                                                                <td><Wrapper content={btn.prompt} /></td>
-                                                                <td>{ btn.user_id !== 0 ? btn.user.name : 'ADMIN' }</td>
-                                                                <td><Moment date={btn.created_at} format="ddd, MMM D, YY" /></td>
+                                                             <td>{ btn.name }</td>
+                                        <td>{ btn.prompt_question && btn.prompt_question.name ? btn.prompt_question.name : 'N/A' }</td>
+                                        <td><Wrapper content={btn.prompt} /></td>
+                                        <td>{ btn.user_id !== 0 && btn.user ? btn.user.name : 'ADMIN' }</td>
+                                        <td><Moment date={btn.created_at} format="ddd, MMM D, YY" /></td>
+
                                                                 <td>
                                                                    {(selectedButton && selectedButton === btn.id) ? <div>
                                                                         <button className="btn btn-outline-danger btn-sm" disabled={IsDeleting} onClick={() => handleDelete(btn)}>

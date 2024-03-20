@@ -165,7 +165,8 @@ const AdminPromptsMain = () => {
                                                                 {prmpt.status === 1 && <button onClick={() => updateStatus(prmpt.id, 0)} disabled={isUpdatingStatus} className="btn btn-sm btn-primary">Published</button>}
                                                                 {prmpt.status === 0 && <button onClick={() => updateStatus(prmpt.id, 1)} disabled={isUpdatingStatus} className="btn btn-sm btn-danger">Not Published</button>}
                                                             </td>
-                                                            <td>{ prmpt.user_id !== 0 ? prmpt.user.name : 'ADMIN' }</td>
+                                                            <td>{ prmpt.user && prmpt.user.name ? prmpt.user.name : 'ADMIN' }</td>
+
                                                             <td><Moment date={prmpt.created_at} format="ddd, MMM D, YY" /></td>
                                                             <td className="tb-col-end">
                                                                 {selectedPrompt === prmpt.id ? <div>

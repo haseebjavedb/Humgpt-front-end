@@ -7,7 +7,8 @@ import Moment from "react-moment";
 import { Link } from "react-router-dom";
 
 const AdminUsers = () => {
-    useTitle("Users")
+    useTitle("Users");
+
     const [users, setUsers] = useState([]);
     const [orgData, setOrgData] = useState([]);
     const [selectedUser, setSelectedUser] = useState(0);
@@ -24,41 +25,44 @@ const AdminUsers = () => {
         setSelectedUser(id);
     }
 
-    const handleDelete = () => {
-        setIsDeleting(true);
-        axios.get(`${Helpers.apiUrl}category/delete/${selectedUser}`, Helpers.authHeaders).then(response => {
+   const handleDelete = (userId) => {
+    setIsDeleting(true);
+    axios.post(`${Helpers.apiUrl}user/Delete/${userId}`, null, Helpers.authHeaders)
+        .then(response => {
             Helpers.toast("success", response.data.message);
             getUsers();
             setSelectedUser(0);
             setIsDeleting(false);
+        })
+        .catch(error => {
+            Helpers.toast("error", error.response.data.message);
+            setIsDeleting(false);
         });
-    }
+}
+
 
     useEffect(() => {
         getUsers();
-        return () => {
-            getUsers();
-        };
     }, []);
 
     return (
-        <div class="nk-content">
-            <div class="container-xl">
-                <div class="nk-content-inner">
-                    <div class="nk-content-body">
-                        <div class="nk-block-head nk-page-head">
-                            <div class="nk-block-head-between">
-                                <div class="nk-block-head-content">
-                                    <h2 class="display-6">Users List</h2>
+        <div className="nk-content">
+            <div className="container-xl">
+                <div className="nk-content-inner">
+                    <div className="nk-content-body">
+                        <div className="nk-block-head nk-page-head">
+                            <div className="nk-block-head-between">
+                                <div className="nk-block-head-content">
+                                    <h2 className="display-6">Users List</h2>
                                     <p>Registered users on HumGPT</p>
                                 </div>
                             </div>
                         </div>
-                        <div class="nk-block">
+                        <div className="nk-block">
                             <SearchHeader title={"Users List"} orgData={orgData} setData={setUsers} columns={['name']} />
-                            <div class="card shadown-none">
-                                <div class="card-body">
-                                    <div class="row g-3 gx-gs">
+                            <div className="card shadow-none">
+                                <div className="card-body">
+                                    <div className="row g-3 gx-gs">
                                         <div className="col-md-12">
                                             <table className="table">
                                                 <thead>
@@ -67,7 +71,7 @@ const AdminUsers = () => {
                                                         <th>Name</th>
                                                         <th>Email</th>
                                                         <th>Joined On</th>
-                                                        <th></th>
+                                                        <th>Actions</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -76,27 +80,34 @@ const AdminUsers = () => {
                                                     </tr>}
                                                     {users.map((user, index) => {
                                                         return (
-                                                            <tr>
-                                                                <td>{ index + 1 }</td>
-                                                                <td>{ user.name }</td>
-                                                                <td>{ user.email }</td>
+                                                            <tr key={user.id}>
+                                                                <td>{index + 1}</td>
+                                                                <td>{user.name}</td>
+                                                                <td>{user.email}</td>
                                                                 <td><Moment date={user.created_at} format="MMM Do YYYY" /></td>
                                                                 <td>
-                                                                   {(selectedUser && selectedUser === user.id) ? <div>
-                                                                        <button className="btn btn-outline-danger btn-sm" disabled={IsDeleting} onClick={() => handleDelete(user)}>
-                                                                            <em class="icon ni ni-check"></em><span className="ml5">{IsDeleting ? 'Deleting...' : 'Yes, Delete'}</span>
-                                                                        </button>
-                                                                        <button className="btn btn-outline-primary btn-sm ml10" disabled={IsDeleting} onClick={() => setSelectedUser(0)}>
-                                                                            <em class="icon ni ni-cross"></em><span className="ml5">Cancel</span>
-                                                                        </button>
-                                                                   </div> : <div>
-                                                                        {/* <button className="btn btn-outline-danger btn-sm ml10" onClick={() => initiateDelete(user.id)}>
-                                                                            <em class="icon ni ni-trash"></em><span className="ml5">Delete</span>
-                                                                        </button> */}
-                                                                        <Link to={`/admin/chats/user/${ user.id }`} className="btn btn-outline-primary btn-sm ml10">
-                                                                            <em class="icon ni ni-eye"></em><span className="ml5">View Chats</span>
-                                                                        </Link>
-                                                                   </div>}
+                                                                    {(selectedUser && selectedUser === user.id) ? (
+                                                                        <div>
+                                                                            <button className="btn btn-outline-danger btn-sm" disabled={IsDeleting} onClick={() => handleDelete(user.id)}>
+                                                                                <em className="icon ni ni-check"></em><span className="ml5">{IsDeleting ? 'Deleting...' : 'Yes, Delete'}</span>
+                                                                            </button>
+                                                                            <button className="btn btn-outline-primary btn-sm ml10" disabled={IsDeleting} onClick={() => setSelectedUser(0)}>
+                                                                                <em className="icon ni ni-cross"></em><span className="ml5">Cancel</span>
+                                                                            </button>
+                                                                        </div>
+                                                                    ) : (
+                                                                        <div>
+                                                                            <Link to={`/admin/chats/user/${user.id}`} className="btn btn-outline-primary btn-sm ml10">
+                                                                                <em className="icon ni ni-eye"></em><span className="ml5">View Chats</span>
+                                                                            </Link>
+                                                                            <Link to={`/admin/user/Edit-User/${user.id}`} className="btn btn-outline-success btn-sm ms-2">
+                                                                                <em className="icon ni ni-edit"></em><span className="ml5">Edit</span>
+                                                                            </Link>
+                                                                            <button className="btn btn-outline-danger btn-sm ml10" onClick={() => initiateDelete(user.id)}>
+                                                                                <em className="icon ni ni-trash"></em><span className="ml5">Delete</span>
+                                                                            </button>
+                                                                        </div>
+                                                                    )}
                                                                 </td>
                                                             </tr>
                                                         );
@@ -112,7 +123,7 @@ const AdminUsers = () => {
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
 export default AdminUsers;

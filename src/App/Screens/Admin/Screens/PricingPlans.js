@@ -13,9 +13,7 @@ const AdminPricingPlans = () => {
     const defaultPlan = {
         plan_name:"",
         monthly_price:"",
-        yearly_price:"",
-        monthly_sale_per:0,
-        yearly_sale_per:0,
+        no_words:"",
         description:""
     };
 
@@ -40,6 +38,7 @@ const AdminPricingPlans = () => {
     const getPlans = () => {
         setPageLoading(true);
         axios.get(`${Helpers.apiUrl}plans/all`, Helpers.authHeaders).then(response => {
+            console.log(response.data.plans)
             setPlans(response.data.plans);
             setPageLoading(false);
         });
@@ -171,9 +170,6 @@ const AdminPricingPlans = () => {
                             </div>
                         </div>
                         {(!showAddPlan && !showFeatures && !viewPlan) && <div class="nk-block">
-                            <div class="pricing-toggle-wrap mb-4">
-                                <button class={`pricing-toggle-button ${ activePlan === 'monthly' ? 'active' : '' }`} onClick={() => setActivePlan('monthly')} data-target="monthly">Monthly</button><button class={`pricing-toggle-button ${ activePlan === 'yearly' ? 'active' : '' }`} onClick={() => setActivePlan('yearly')} data-target="yearly">Yearly</button>
-                            </div>
                             <div class="mt-xl-5">
                                 <div class="row g-0">
                                     {plans.map((pln, index) => {
@@ -185,10 +181,7 @@ const AdminPricingPlans = () => {
                                                             <h2 class="mb-3">{ pln.plan_name }</h2>
                                                             <div class="pricing-price-wrap">
                                                                 <div class={`pricing-price pricing-toggle-content monthly ${ activePlan === 'monthly' ? 'active' : '' }`}>
-                                                                    <h3 class="display-1 mb-3 fw-semibold">{pln.monthly_sale_per > 0 && <del className="cut-price">${ pln.monthly_price } </del>}${ parseFloat(pln.final_monthly).toFixed(2) } <span class="caption-text text-light fw-normal"> / month</span></h3>
-                                                                </div>
-                                                                <div class={`pricing-price pricing-toggle-content yearly ${ activePlan === 'yearly' ? 'active' : '' }`}>
-                                                                    <h3 class="display-1 mb-3 fw-semibold"><del className="cut-price">${ pln.yearly_price } </del>${ parseFloat(pln.final_yearly).toFixed(2) } <span class="caption-text text-light fw-normal"> / year</span></h3>
+                                                                    <h3 class="display-1 mb-3 fw-semibold">${ parseFloat(pln.monthly_price).toFixed(2) } <span class="caption-text text-light fw-normal"> / month</span></h3>
                                                                 </div>
                                                             </div>
                                                             <div class="mb-2">
@@ -289,10 +282,10 @@ const AdminPricingPlans = () => {
                                 <div class="card-body">
                                     <div class="row g-3 gx-gs">
                                         <TextInput error={errors.plan_name} label={"Plan Name"} cols={12} value={plan.plan_name} onChange={e => setPlan({...plan, plan_name: e.target.value})} />
-                                        <TextInput error={errors.monthly_price} label={"Basic Monthly"} value={plan.monthly_price} onChange={e => setPlan({...plan, monthly_price: e.target.value})} />
-                                        <TextInput error={errors.yearly_price} label={"Basic Yearly"} value={plan.yearly_price} onChange={e => setPlan({...plan, yearly_price: e.target.value})} />
-                                        <TextInput error={errors.monthly_sale_per} label={"Sale on Monthly"} value={plan.monthly_sale_per} onChange={e => setPlan({...plan, monthly_sale_per: e.target.value})} />
-                                        <TextInput error={errors.yearly_sale_per} label={"Sale on Yearly"} value={plan.yearly_sale_per} onChange={e => setPlan({...plan, yearly_sale_per: e.target.value})} />
+                                        <TextInput error={errors.monthly_price} label={"Monthly Price"} value={plan.monthly_price} onChange={e => setPlan({...plan, monthly_price: e.target.value})} />
+                                        <TextInput error={errors.no_words} label={"No. of Words"} value={plan.no_words} onChange={e => setPlan({...plan, no_words: e.target.value})} />
+                                        {/* <TextInput error={errors.monthly_sale_per} label={"Sale on Monthly"} value={plan.monthly_sale_per} onChange={e => setPlan({...plan, monthly_sale_per: e.target.value})} />
+                                        <TextInput error={errors.yearly_sale_per} label={"Sale on Yearly"} value={plan.yearly_sale_per} onChange={e => setPlan({...plan, yearly_sale_per: e.target.value})} /> */}
                                         <TextInput isTextArea={true} error={errors.description} label={"Description"} cols={12} value={plan.description} onChange={e => setPlan({...plan, description: e.target.value})} />
                                         <div className="col-md-12">
                                             <button className="btn btn-primary" disabled={isLoading} onClick={savePlan}>{isLoading ? 'Saving...' : 'Save Pricing Plan'}</button>

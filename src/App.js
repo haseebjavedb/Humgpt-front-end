@@ -49,7 +49,9 @@ import ReportPrompt from './App/Screens/User/Screens/ReportPrompt.js'
 import Reports from './App/Screens/User/Screens/Reports.js' ;
 import Chatid from './App/Screens/User/Screens/Chatid.js';
 import PricingPlansOld from './App/Screens/User/Screens/PricingPlansOld.js'
-
+import PricingPlans from './App/Screens/Admin/Screens/PricingPlans.js'
+import EditUser from './App/Screens/Admin/Screens/EditUser.js';
+import Profile from './App/Screens/Admin/Screens/Profile.js'
 const stripePromise = loadStripe('pk_test_51O9b0oJVi3wqPduPwga8kOEivIqTmn5t6UFj5VRrP2CWqkN4d4sPFBltB7AGz1s7pg9rxXAgrnfkeMz5MpRdSur500rGXqxQxo');
 
 const Auth = ({ children, isAuth = true, isAdmin = false }) => {
@@ -138,7 +140,7 @@ const App = () => {
           <Route path='/user/prompt/:prompt_id' element={<Auth><UserPromptTesting /></Auth>} />
           <Route path='/user/instructions' element={<Auth><UserInstructions /></Auth>} />
           <Route path='/user/buttons' element={<Auth><UserButtons /></Auth>} />
-          <Route path='/user/subscribe-product/:product_id' element={<Auth>
+          <Route path='/user/subscribe-product/:plan_id' element={<Auth>
             <Elements stripe={stripePromise}>
               <PaymentScreen />
             </Elements>
@@ -157,7 +159,10 @@ const App = () => {
           <Route path='/admin/chat-history' element={<Auth isAdmin={true}><AdminChatHistory /></Auth>} />
           <Route path='/admin/chat/:chatid' element={<Auth isAdmin={true}><SingleChat /></Auth>} />
           <Route path='/admin/chats/user/:user_id' element={<Auth isAdmin={true}><AdminChatHistoryUser /></Auth>} />
+          <Route path='/admin/user/Edit-User/:user_id' element={<Auth isAdmin={true}><EditUser /></Auth>} />
           <Route path='/admin/stripe-products' element={<Auth isAdmin={true}><AdminStripeDashboard /></Auth>} />
+          <Route path='/admin/Pricing-Plans' element={<Auth isAdmin={true}><PricingPlans /></Auth>} />
+          <Route path='/admin/profile' element={<Auth isAdmin={true}><Profile /></Auth>} />
         </Route>
       </Routes>
     </BrowserRouter>

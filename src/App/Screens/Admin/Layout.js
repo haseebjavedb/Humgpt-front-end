@@ -76,8 +76,13 @@ const AdminLayout = () => {
                                         </Link>
                                     </li>
                                     <li class="nk-menu-item">
-                                        <Link to={'/admin/stripe-products'} class="nk-menu-link">
-                                            <span class="nk-menu-icon"><em class="icon ni ni-sign-usdc"></em></span><span class="nk-menu-text">Stripe Products</span>
+                                        <Link to={'/admin/instructions'} class="nk-menu-link">
+                                            <span class="nk-menu-icon"><em class="icon ni ni-info"></em></span><span class="nk-menu-text">Instructions</span>
+                                        </Link>
+                                    </li>
+                                    <li class="nk-menu-item">
+                                        <Link to={'/admin/profile'} class="nk-menu-link">
+                                            <span class="nk-menu-icon"><em class="icon ni ni-dashboard"></em></span><span class="nk-menu-text"> Profile</span>
                                         </Link>
                                     </li>
                                     <li class="nk-menu-item">

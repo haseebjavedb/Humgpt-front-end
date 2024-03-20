@@ -59,7 +59,7 @@ const ChatHistory = () => {
                                       "N/A"}
                                   </div>
                                   <h5 className="fs-14px fw-normal ms-2">
-    {chat.chat_message}
+    {/* {chat.chat_message} */}
 </h5>
 
                                 </div>

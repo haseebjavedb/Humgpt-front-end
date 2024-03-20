@@ -6,41 +6,34 @@ import PageLoader from "../../../Components/Loader/PageLoader";
 import { Link } from "react-router-dom";
 
 const AdminDashboard = () => {
-  useTitle("Dashboard");
+    useTitle("Dashboard");
 
-  const [data, setData] = useState({});
-  const [pageLoading, setPageLoading] = useState(true);
+    const [data, setData] = useState({});
+    const [pageLoading, setPageLoading] = useState(true);
 
-  const getInfo = () => {
-    setPageLoading(true);
-    axios
-      .get(`${Helpers.apiUrl}admin/get`, Helpers.authHeaders)
-      .then((response) => {
-        setData(response.data);
-        setPageLoading(false);
-      });
-  };
+    const getInfo = () => {
+        setPageLoading(true);
+        axios.get(`${Helpers.apiUrl}admin/get`, Helpers.authHeaders).then(response => {
+            setData(response.data);
+            setPageLoading(false);
+        });
+    }
 
-  useEffect(() => {
-    getInfo();
-  }, []);
+    useEffect(() => {
+        getInfo();
+    }, []);
 
-  return (
-    <div class="nk-content">
-      <div class="container-xl">
-        <div class="nk-content-inner">
-          {pageLoading ? (
-            <PageLoader />
-          ) : (
-            <div class="nk-content-body">
-              <div class="nk-block-head nk-page-head">
-                <div class="nk-block-head-between">
-                  <div class="nk-block-head-content">
-                    <h2 class="display-6">Welcome {Helpers.authUser.name}!</h2>
-                  </div>
-                </div>
-              </div>
-              {/* <div class="nk-block">
+    return (
+        <div class="nk-content">
+            <div class="container-xl">
+                <div class="nk-content-inner">
+                    {pageLoading ? <PageLoader /> : <div class="nk-content-body">
+                        <div class="nk-block-head nk-page-head">
+                            <div class="nk-block-head-between">
+                                <div class="nk-block-head-content"><h2 class="display-6"> { Helpers.authUser.name }!</h2></div>
+                            </div>
+                        </div>
+                        <div class="nk-block">
                             <div class="row g-gs">
                                 <div class="col-sm-6 col-xxl-3">
                                     <div class="card card-full bg-purple bg-opacity-10 border-0">
@@ -80,64 +73,46 @@ const AdminDashboard = () => {
                                         <div class="card-body">
                                             <div class="d-flex align-items-center justify-content-between mb-1">
                                                 <div class="fs-6 text-light mb-0">Chat History</div>
-                                                <Link to={'/admin/chats-history'} class="link link-cyan">See All</Link>
+                                                {/* <Link to={'/admin/chats-history'} class="link link-cyan">See All</Link> */}
                                             </div>
                                             <h5 class="fs-1">{ data.chats.length } <small class="fs-3">Chats</small></h5>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div> */}
-              <div class="nk-block-head">
-              {/* <div class="nk-block-head-content "><h2 class="display-6 ">  <small>Popular Templates</small> </h2></div> */}
-
-                <div class="text-end">
-                  <div class="nk-block-head-content">
-                    <Link to={"/admin/prompts"} class="link text-end text-dark">
-                      Explore All
-                    </Link>
-                  </div>
-                </div>
-              </div>
-              <div class="nk-block">
-                <div class="row g-gs">
-                  {data.templates
-                    .filter(
-                      (template) =>
-                        template.name.trim().toLowerCase() ===
-                          "generate reports" ||
-                        template.name.trim().toLowerCase() ===
-                          "generate proposals"
-                    )
-                    .map((template, index) => (
-                      <div class="col-md-6" key={template.id}>
-                        <Link
-                          to={`/admin/prompt/questions/${Helpers.encryptString(
-                            template.id
-                          )}`}
-                        >
-                          <div class="card card-full">
-                            <div class="card-body">
-                              <div class="media media-rg media-middle media-circle text-primary bg-primary bg-opacity-20 mb-3">
-                                {template.name.charAt(0)}
-                              </div>
-                              <h5 class="fs-4 fw-medium">{template.name}</h5>
-                              <p class="small text-light">
-                                {template.description}
-                              </p>
+                        </div>
+                        <div class="nk-block-head">
+                            <div class="nk-block-head-between">
+                                <div class="nk-block-head-content"><h2 class="display-6">Popular Templates</h2></div>
+                                <div class="nk-block-head-content"><Link to={'/admin/prompts'} class="link">Explore All</Link></div>
                             </div>
-                          </div>
-                        </Link>
-                      </div>
-                    ))}
+                        </div>
+                        <div class="nk-block">
+                            <div class="row g-gs">
+                                {data.templates.map((template, index) => {
+                                    if(index < 4){
+                                        return (
+                                            <div class="col-sm-6 col-xxl-3">
+                                                <Link to={`/admin/prompt/questions/${ Helpers.encryptString(template.id) }`}>
+                                                    <div class="card card-full">
+                                                        <div class="card-body">
+                                                            <div class="media media-rg media-middle media-circle text-primary bg-primary bg-opacity-20 mb-3">{ template.name.charAt(0) }</div>
+                                                            <h5 class="fs-4 fw-medium">{ template.name }</h5>
+                                                            <p class="small text-light">{ template.description }</p>
+                                                        </div>
+                                                    </div>
+                                                </Link>
+                                            </div>
+                                        );
+                                    }
+                                })}
+                            </div>
+                        </div>
+                    </div>}
                 </div>
-              </div>
             </div>
-          )}
         </div>
-      </div>
-    </div>
-  );
-};
+    )
+}
 
 export default AdminDashboard;

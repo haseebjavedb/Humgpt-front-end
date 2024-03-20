@@ -74,7 +74,6 @@ const Reportprompt = () => {
             response.data.messages.length === 0 ||
             response.data.chat_message === ""
           ) {
-            
           } else {
             setMessages(response.data.messages);
             setTimeout(() => {
@@ -93,12 +92,16 @@ const Reportprompt = () => {
     if (location.state?.selectedFile) {
       setSelectedFile(location.state.selectedFile);
     }
-
-
-    
   };
 
- 
+  const downloadSingleMessageExcel = (message) => {
+    const XLSX = require("xlsx");
+    const ws = XLSX.utils.json_to_sheet([{ message: message.message }]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Message");
+
+    XLSX.writeFile(wb, `chat_message_${new Date().toISOString()}.xlsx`);
+  };
 
   const getResponse = (btnPrompt = "") => {
     if (btnPrompt || UserInput) {
@@ -195,8 +198,8 @@ const Reportprompt = () => {
 
     // Reset state values when location state changes (e.g., after reloading)
     if (location.state) {
-        window.history.replaceState(null, ""); // Clear location state
-      }
+      window.history.replaceState(null, ""); // Clear location state
+    }
   }, [location.state]);
 
   return (
@@ -277,12 +280,25 @@ const Reportprompt = () => {
                           {msg.is_bot === 1 && (
                             <div className="text-center">
                               <button
-                                className="btn btn btn-outline-primary btn-sm ml10"
+                                className="btn btn-outline-primary btn-sm ml10"
                                 onClick={() => downloadSingleMessagePDF(msg)}
                               >
-                                <Download size={14} />
-                                <span className="ml5">Download</span>
+                                <Download size={14} />{" "}
+                                <span className="ml5">Download PDF</span>
                               </button>
+                              <button
+                                className="btn btn-outline-primary btn-sm ml10"
+                                onClick={() => downloadSingleMessageExcel(msg)}
+                              >
+                                <Download size={14} />{" "}
+                                <span className="ml5">Download Excel</span>
+                              </button>
+                              {/* <button
+                              className="btn btn-outline-primary btn-sm ml10"
+                              onClick={() => downloadSingleMessageWord(msg)}
+                            >
+                              <Download size={14} /> <span className="ml5">Download Word</span>
+                            </button> */}
                             </div>
                           )}
                         </div>

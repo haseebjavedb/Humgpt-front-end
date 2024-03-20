@@ -49,12 +49,17 @@ const AdminChatHistory = () => {
                                                         <div class="card-body">
                                                             <div class="d-flex align-items-center justify-content-between mb-2">
                                                                 <div class="d-flex align-items-center">
-                                                                    <div class="media media-xs media-middle media-circle text-primary bg-primary bg-opacity-20">{ chat.prompt_question.name.charAt(0) }</div>
-                                                                    <h5 class="fs-14px fw-normal ms-2">{ chat.prompt_question.name }</h5>
+                                                                <div class="media media-xs media-middle media-circle text-primary bg-primary bg-opacity-20">{ chat.prompt_question?.name ? chat.prompt_question.name.charAt(0).length : 0 }</div>
+
+
+                                                                    
+                                                                    {/* <h5 class="fs-14px fw-normal ms-2">{ chat.prompt_question?.name ? chat.prompt_question.name.length : 0 }</h5> */}
+
                                                                 </div>
                                                                 <button class="js-copy" data-clipboard-target="#SocialMediaPost04"></button>
                                                             </div>
                                                             <p class="lead text-base" style={{ fontSize: 12 }} id="SocialMediaPost04">
+                                                                
                                                                 <APIResponse response={chat.chat_message} onlyFirstPara={true} />
                                                             </p>
                                                             <ul class="nk-timeline-meta">

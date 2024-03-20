@@ -17,12 +17,12 @@ const PaymentScreen = () => {
     const [isLoading, setIsLoading] = useState(false);
     
     const navigate = useNavigate();
-    const {product_id} = useParams();
+    const {plan_id} = useParams();
 
     const getPlan = () => {
         setPageLoading(true);
-        axios.get(`${Helpers.apiUrl}stripe/single/${ product_id }`, Helpers.authHeaders).then(response => {
-            setPlan(response.data);
+        axios.get(`${Helpers.apiUrl}plans/single/${ plan_id }`, Helpers.authHeaders).then(response => {
+            setPlan(response.data.plan);
             setPageLoading(false);
         }).catch(error => {
             Helpers.toast("error", error.response.data.message);
@@ -37,8 +37,7 @@ const PaymentScreen = () => {
         const { token } = await stripe.createToken(elements.getElement(CardElement));
         if(token){
             let data = {
-                price_id: plan.default_price,
-                product_id: plan.id,
+                plan_id: plan.id,
                 token:token.id,
             }
             axios.post(`${Helpers.apiUrl}stripe/process-payment`, data, Helpers.authHeaders).then(response => {
@@ -67,7 +66,7 @@ const PaymentScreen = () => {
 
 
     return (
-        <div class="nk-content p0">
+        <div class="nk-content ">
             <div class="container-xl p0">
                 <div class="nk-content-inner">
                     {pageLoading ? <PageLoader /> : <div class="nk-content-body">
@@ -85,12 +84,12 @@ const PaymentScreen = () => {
                                         </a>
                                     </div>
                                     <div class="pt-4">
-                                        <div class="fs-4 fw-normal">Subscribe to { plan.name } ({ plan.interval })</div>
-                                        <h3 class="display-1 fw-semibold">{ parseFloat(plan.unit_amount).toFixed(2) } { plan.currency } <span class="caption-text text-light fw-normal"> per { plan.interval }</span></h3>
+                                        <div class="fs-4 fw-normal">Subscribe to { plan.plan_name } ({ 'Monthly' })</div>
+                                        <h3 class="display-1 fw-semibold">${ parseFloat(plan.monthly_price).toFixed(2) }<span class="caption-text text-light fw-normal"> per month</span></h3>
                                         <div class="fs-5 fw-normal mt-2">{ plan.description }</div>
                                     </div>
                                     <ul class="pricing-features">
-                                        {plan.features && plan.features.map(feature => <li><em class="icon text-primary ni ni-check-circle"></em><span>{ feature.name }</span></li>)}
+                                        {plan.plan_features && plan.plan_features.map(feature => <li><em class="icon text-primary ni ni-check-circle"></em><span>{ feature.feature }</span></li>)}
                                     </ul>
                                     <div class="pt-lg-5"></div>
                                 </div>
@@ -119,7 +118,7 @@ const PaymentScreen = () => {
                                                 <div class="form-control-wrap"><input class="form-control" type="text" value={user.name} placeholder="Full Name" /></div>
                                             </div>
                                         </div>
-                                        <div class="col-12">
+                                        {/* <div class="col-12">
                                             <div class="form-check flex-nowrap p-2 border border-light rounded my-1">
                                                 <input class="form-check-input mt-0 flex-shrink-0" type="checkbox" value="" id="savecard" />
                                                 <label class="form-check-label" for="savecard">
@@ -127,13 +126,13 @@ const PaymentScreen = () => {
                                                     <p class="fs-12px lh-sm">Pay faster on Genious.AI and everywhere Link is accepted.</p>
                                                 </label>
                                             </div>
-                                        </div>
+                                        </div> */}
                                         <div class="col-12">
                                             <div class="form-group"><button onClick={processPayment} disabled={isLoading} class="btn btn-primary w-100">{isLoading ? 'Processing...' : 'Subscribe'}</button></div>
                                         </div>
                                         <div class="col-12">
                                             <div class="form-note">
-                                                By confirming your subscription, you allow HumGPT to charge your card for this payment and future payments in accordance with their terms. You can always cancel your subscription.
+                                                By confirming your subscription, you allow eComEmail.AI to charge your card for this payment and future payments in accordance with their terms. You can always cancel your subscription.
                                             </div>
                                         </div>
                                     </div>
