@@ -51,7 +51,8 @@ import Chatid from './App/Screens/User/Screens/Chatid.js';
 import PricingPlansOld from './App/Screens/User/Screens/PricingPlansOld.js'
 import PricingPlans from './App/Screens/Admin/Screens/PricingPlans.js'
 import EditUser from './App/Screens/Admin/Screens/EditUser.js';
-import Profile from './App/Screens/Admin/Screens/Profile.js'
+import Profile from './App/Screens/Admin/Screens/Profile.js';
+import PaystackScreen from './App/Screens/User/Screens/PaystackScreen.js';
 const stripePromise = loadStripe('pk_test_51O9b0oJVi3wqPduPwga8kOEivIqTmn5t6UFj5VRrP2CWqkN4d4sPFBltB7AGz1s7pg9rxXAgrnfkeMz5MpRdSur500rGXqxQxo');
 
 const Auth = ({ children, isAuth = true, isAdmin = false }) => {
@@ -102,8 +103,14 @@ const Auth = ({ children, isAuth = true, isAdmin = false }) => {
 }
 
 const App = () => {
-
+  const responseMessage = (response) => {
+    console.log(response);
+};
+const errorMessage = (error) => {
+    console.log(error);
+};
   return (
+    
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Layout />}>
@@ -145,6 +152,10 @@ const App = () => {
               <PaymentScreen />
             </Elements>
           </Auth>} />
+
+          <Route path='/user/subscribe-plan_paystack/:plan_id' element={<Auth>
+          <PaystackScreen />
+         </Auth>} />
         </Route>
         <Route path='/admin' element={<AdminLayout />}>
           <Route path='/admin/dashboard' element={<Auth isAdmin={true}><AdminDashboard /></Auth>} />

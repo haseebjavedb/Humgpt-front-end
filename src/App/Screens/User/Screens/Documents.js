@@ -14,6 +14,10 @@ import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import ChatGPTFormatter from "../../../Components/ChatgptFormatter";
 import { jsPDF } from "jspdf";
+// import { jsPDF } from "jspdf";
+import * as XLSX from "xlsx";
+import { Document, Packer, Paragraph } from "docx";
+import { saveAs } from "file-saver";
 
 const Reportprompt = () => {
   const { chatid } = useParams();
@@ -56,6 +60,28 @@ const Reportprompt = () => {
 
     pdf.save(`chat_message_${new Date().toISOString()}.pdf`);
   };
+  const downloadSingleMessageExcel = (message) => {
+    const XLSX = require("xlsx");
+    const ws = XLSX.utils.json_to_sheet([{ message: message.message }]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Message");
+
+    XLSX.writeFile(wb, `chat_message_${new Date().toISOString()}.xlsx`);
+  };
+
+  const downloadSingleMessageWord = async (message) => {
+    const doc = new Document({
+      sections: [
+        {
+          properties: {},
+          children: [new Paragraph(message.message)],
+        },
+      ],
+    });
+
+    const blob = await Packer.toBlob(doc);
+    saveAs(blob, `chat_message_${new Date().toISOString()}.docx`);
+  };
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -94,15 +120,21 @@ const Reportprompt = () => {
     }
   };
 
-  const downloadSingleMessageExcel = (message) => {
-    const XLSX = require("xlsx");
-    const ws = XLSX.utils.json_to_sheet([{ message: message.message }]);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Message");
 
-    XLSX.writeFile(wb, `chat_message_${new Date().toISOString()}.xlsx`);
-  };
 
+  function downloadWords(words, filename) {
+    const data = words.join('\n');
+    const blob = new Blob([data], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
   const getResponse = (btnPrompt = "") => {
     if (btnPrompt || UserInput) {
       setIsLoading(true);
@@ -293,12 +325,12 @@ const Reportprompt = () => {
                                 <Download size={14} />{" "}
                                 <span className="ml5">Download Excel</span>
                               </button>
-                              {/* <button
+                              <button
                               className="btn btn-outline-primary btn-sm ml10"
                               onClick={() => downloadSingleMessageWord(msg)}
                             >
                               <Download size={14} /> <span className="ml5">Download Word</span>
-                            </button> */}
+                            </button>
                             </div>
                           )}
                         </div>

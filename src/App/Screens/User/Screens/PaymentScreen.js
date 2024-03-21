@@ -130,9 +130,14 @@ const PaymentScreen = () => {
                                         <div class="col-12">
                                             <div class="form-group"><button onClick={processPayment} disabled={isLoading} class="btn btn-primary w-100">{isLoading ? 'Processing...' : 'Subscribe'}</button></div>
                                         </div>
+
+                                        <div class="col-12">
+                                            <Link  to= {`/user/subscribe-plan_paystack/${plan_id} `} class="form-group"><button class="btn btn-primary w-100"> Pay with Paystack </button></Link>
+                                        </div> 
+
                                         <div class="col-12">
                                             <div class="form-note">
-                                                By confirming your subscription, you allow eComEmail.AI to charge your card for this payment and future payments in accordance with their terms. You can always cancel your subscription.
+                                                By confirming your subscription, you allow humgpt to charge your card for this payment and future payments in accordance with their terms. You can always cancel your subscription.
                                             </div>
                                         </div>
                                     </div>

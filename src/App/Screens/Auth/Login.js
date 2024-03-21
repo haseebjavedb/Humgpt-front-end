@@ -1,32 +1,23 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useTitle from "../../Hooks/useTitle";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Helpers from "../../Config/Helpers";
-import { GoogleLogin, GoogleLogout } from "react-google-login";
+import { GoogleLogin } from "react-google-login";
+import { gapi } from 'gapi-script';
 
 const Login = () => {
   useTitle("Login");
 
-  const defaultUser = {
+  const [user, setUser] = useState({
     email: "",
     password: "",
-  };
+  });
 
-  const [user, setUser] = useState(defaultUser);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
-  const [token, setToken] = useState(null); // State to hold the token
-  const clientId =
-    "9745213746-sqsnhe5o1njvvul2ouqd5qkvfbm7r16r.apps.googleusercontent.com";
-
-  useEffect(() => {
-    // Check if token exists in local storage
-    const storedToken = localStorage.getItem("token");
-    if (storedToken) {
-      setToken(storedToken);
-    }
-  }, []);
+  const navigate = useNavigate();
+  const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -34,47 +25,67 @@ const Login = () => {
     axios
       .post(`${Helpers.apiUrl}auth/login`, user)
       .then((response) => {
-        Helpers.toast("success", response.data.message);
-        Helpers.setItem("user", response.data.user, true);
-        Helpers.setItem("token", response.data.token);
-        setToken(response.data.token); // Set token in state
-        const loginTimestamp = new Date().getTime();
-        Helpers.setItem("loginTimestamp", loginTimestamp);
-        if (response.data.user.user_type === 1) {
-          window.location.href = "/admin/dashboard";
-        } else {
-          window.location.href = "/user/dashboard";
-        }
-        setIsLoading(false);
+        onLoginSuccess(response);
       })
       .catch((error) => {
-        Helpers.toast("error", error.response.data.message);
-        setErrors(error.response.data.errors || {});
-        setIsLoading(false);
+        onLoginError(error);
       });
   };
-
-  const onSuccess = (res) => {
-    console.log("Login success", res.profileObj);
-    const googleId = localStorage.getItem("google_id");
-    console.log("Google ID:", googleId);
+  const responseGoogle = (response) => {
+    if (response?.tokenId) {
+      const userData = {
+        name: response.profileObj.name, // Assuming you're using the Google Login library and 'profileObj' contains user's name
+        email: response.profileObj.email, // Assuming you're using the Google Login library and 'profileObj' contains user's email
+   
+        googleId: response.profileObj.googleId // Assuming you're using the Google Login library and 'profileObj' contains user's Google ID
+      };
+  
+      setIsLoading(true);
+      axios
+        .post(`${Helpers.apiUrl}auth/google-login`, userData )
+        .then((response) => {
+          onLoginSuccess(response);
+        })
+        .catch((error) => {
+          onLoginError(error);
+        });
+    } else {
+      console.error("Google login failed: ", response);
+    }
   };
   
-  const onFailure = () => {
-    console.log("Login Failed");
+
+  const onLoginSuccess = (response) => {
+    Helpers.toast("success", response.data.message);
+    Helpers.setItem("user", response.data.user, true);
+    Helpers.setItem("token", response.data.token);
+    const loginTimestamp = new Date().getTime();
+    Helpers.setItem("loginTimestamp", loginTimestamp);
+    const userType = response.data.user.user_type === 1 ? "/admin/dashboard" : "/user/dashboard";
+    navigate(userType);
+    setIsLoading(false);
   };
 
-  const onLogoutSuccess = () => {
-    console.log("Logout success");
-    localStorage.removeItem("token"); // Remove token from local storage on logout
-    setToken(null); // Clear token state
-    // Perform any additional actions after logout (e.g., redirecting to home page)
+  const onLoginError = (error) => {
+    Helpers.toast("error", error.response?.data?.message || "An error occurred");
+    setErrors(error.response?.data?.errors || {});
+    setIsLoading(false);
   };
 
-  const onLogoutFailure = (error) => {
-    console.error("Logout failed:", error);
-    // Handle logout failure (e.g., show an error message)
-  };
+  useEffect(() => {
+    gapi.load("auth2", () => {
+      const auth2 = gapi.auth2.init({
+        client_id: clientId,
+        scope: "email"
+      });
+      auth2.then((result) => {
+        // handle success if needed
+      }).catch((err) => {
+        console.log(err);
+        Helpers.toast("error", err);
+      });
+    });
+  }, [clientId]);
 
   return (
     <main className="nk-pages">
@@ -159,17 +170,8 @@ const Login = () => {
                             <GoogleLogin
                               clientId={clientId}
                               buttonText="Login with Google"
-                              onSuccess={onSuccess}
-                              onFailure={onFailure}
-                              cookiePolicy={"single_host_origin"}
-                            />
-                          </div>
-                          <div className="form-group">
-                            <GoogleLogout
-                              clientId={clientId}
-                              buttonText="Logout with Google"
-                              onLogoutSuccess={onLogoutSuccess}
-                              onLogoutFailure={onLogoutFailure}
+                              onSuccess={responseGoogle}
+                              onFailure={responseGoogle}
                               cookiePolicy={"single_host_origin"}
                             />
                           </div>

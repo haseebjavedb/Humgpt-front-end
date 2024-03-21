@@ -15,6 +15,11 @@ import axios from "axios";
 import ChatGPTFormatter from "../../../Components/ChatgptFormatter";
 import { jsPDF } from "jspdf";
 
+// import { jsPDF } from "jspdf";
+import * as XLSX from "xlsx";
+import { Document, Packer, Paragraph  } from "docx";
+import { saveAs } from "file-saver";
+
 const Report = () => {
   const { chatid } = useParams();
   const navigate = useNavigate();
@@ -32,6 +37,30 @@ const Report = () => {
   const scrollToBottom = () => {
     window.scrollTo(0, document.body.scrollHeight);
   };
+  
+  const downloadSingleMessageExcel = (message) => {
+    const XLSX = require("xlsx");
+    const ws = XLSX.utils.json_to_sheet([{ message: message.message }]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Message");
+
+    XLSX.writeFile(wb, `chat_message_${new Date().toISOString()}.xlsx`);
+  };
+
+  const downloadSingleMessageWord = async (message) => {
+    const doc = new Document({
+      sections: [
+        {
+          properties: {},
+          children: [new Paragraph(message.message)],
+        },
+      ],
+    });
+
+    const blob = await Packer.toBlob(doc);
+    saveAs(blob, `chat_message_${new Date().toISOString()}.docx`);
+  };
+
 
   const downloadSingleMessagePDF = (message) => {
     const pdf = new jsPDF();
@@ -277,12 +306,25 @@ const Report = () => {
                           {msg.is_bot === 1 && (
                             <div className="text-center">
                               <button
-                                className="btn btn btn-outline-primary btn-sm ml10"
+                                className="btn btn-outline-primary btn-sm ml10"
                                 onClick={() => downloadSingleMessagePDF(msg)}
                               >
-                                <Download size={14} />
-                                <span className="ml5">Download</span>
+                                <Download size={14} />{" "}
+                                <span className="ml5">Download PDF</span>
                               </button>
+                              <button
+                                className="btn btn-outline-primary btn-sm ml10"
+                                onClick={() => downloadSingleMessageExcel(msg)}
+                              >
+                                <Download size={14} />{" "}
+                                <span className="ml5">Download Excel</span>
+                              </button>
+                              <button
+                              className="btn btn-outline-primary btn-sm ml10"
+                              onClick={() => downloadSingleMessageWord(msg)}
+                            >
+                              <Download size={14} /> <span className="ml5">Download Word</span>
+                            </button>
                             </div>
                           )}
                         </div>
