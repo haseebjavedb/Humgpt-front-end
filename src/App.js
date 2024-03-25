@@ -53,6 +53,10 @@ import PricingPlans from './App/Screens/Admin/Screens/PricingPlans.js'
 import EditUser from './App/Screens/Admin/Screens/EditUser.js';
 import Profile from './App/Screens/Admin/Screens/Profile.js';
 import PaystackScreen from './App/Screens/User/Screens/PaystackScreen.js';
+import Settings from './App/Screens/Admin/Screens/Settings.js';
+
+
+
 const stripePromise = loadStripe('pk_test_51O9b0oJVi3wqPduPwga8kOEivIqTmn5t6UFj5VRrP2CWqkN4d4sPFBltB7AGz1s7pg9rxXAgrnfkeMz5MpRdSur500rGXqxQxo');
 
 const Auth = ({ children, isAuth = true, isAdmin = false }) => {
@@ -174,6 +178,7 @@ const errorMessage = (error) => {
           <Route path='/admin/stripe-products' element={<Auth isAdmin={true}><AdminStripeDashboard /></Auth>} />
           <Route path='/admin/Pricing-Plans' element={<Auth isAdmin={true}><PricingPlans /></Auth>} />
           <Route path='/admin/profile' element={<Auth isAdmin={true}><Profile /></Auth>} />
+          <Route path='/admin/Settings' element={<Auth isAdmin={true}><Settings /></Auth>} />
         </Route>
       </Routes>
     </BrowserRouter>

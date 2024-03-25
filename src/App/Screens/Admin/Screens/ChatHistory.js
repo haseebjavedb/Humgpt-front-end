@@ -59,13 +59,19 @@ const AdminChatHistory = () => {
                                                                 <button class="js-copy" data-clipboard-target="#SocialMediaPost04"></button>
                                                             </div>
                                                             <p class="lead text-base" style={{ fontSize: 12 }} id="SocialMediaPost04">
+                                                         {chat.chat_message && 
                                                                 
                                                                 <APIResponse response={chat.chat_message} onlyFirstPara={true} />
+                                                                }
                                                             </p>
                                                             <ul class="nk-timeline-meta">
                                                                 <li>{ chat.user.name }</li>
                                                                 <li><Moment date={chat.created_at} format="ddd, MMM Do YYYY, h:mm A" /></li>
-                                                                <li>{ Helpers.countWords(chat.chat_message) } Words / {chat.chat_message.length} Characters</li>
+                                                                <li>
+                                                                {Helpers.countWords(chat.chat_message)} Words / 
+                                                                {chat.chat_message ? chat.chat_message.length : 0} Characters
+                                                            </li>
+
                                                             </ul>
                                                         </div>
                                                     </div>

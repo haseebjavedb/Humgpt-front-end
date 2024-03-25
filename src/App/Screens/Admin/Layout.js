@@ -86,6 +86,11 @@ const AdminLayout = () => {
                                         </Link>
                                     </li>
                                     <li class="nk-menu-item">
+                                        <Link to={'/admin/Settings'} class="nk-menu-link">
+                                            <span class="nk-menu-icon"><em class="icon ni ni-tag"></em></span><span class="nk-menu-text"> Settings</span>
+                                        </Link>
+                                    </li>
+                                    <li class="nk-menu-item">
                                         <a href="#!" onClick={logout} class="nk-menu-link">
                                             <span class="nk-menu-icon"><em class="icon ni ni-signout"></em></span><span class="nk-menu-text">Sign Out</span>
                                         </a>
@@ -169,11 +174,7 @@ const AdminLayout = () => {
                             <div class="d-flex align-items-center flex-wrap justify-content-between mx-n3">
                                 <div class="nk-footer-links px-3">
                                     <ul class="nav nav-sm">
-                                        <li class="nav-item"><a class="nav-link" href="../index-2.html#">Home</a></li>
-                                        <li class="nav-item"><a class="nav-link" href="../index-2.html#">Pricing</a></li>
-                                        <li class="nav-item"><a class="nav-link" href="../index-2.html#">Privacy Policy</a></li>
-                                        <li class="nav-item"><a class="nav-link" href="../index-2.html#">FAQ</a></li>
-                                        <li class="nav-item"><a class="nav-link" href="../index-2.html#">Contact</a></li>
+                                     
                                     </ul>
                                 </div>
                                 <div class="nk-footer-copyright fs-6 px-3">&copy; 2023 All Rights Reserved to <a href="#!">HumGPT</a>.</div>
